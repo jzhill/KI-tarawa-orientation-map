@@ -6,9 +6,9 @@ Status: in development. Code is being added in stages; see the commit history.
 
 ## Layout
 
-- `R/`: functions (sourced, not run directly). `natural_earth.R` fetches Natural Earth layers; `pacific_groupings.R` builds the named Pacific polygons.
+- `R/`: functions (sourced, not run directly). `natural_earth.R` fetches Natural Earth layers; `pacific_groupings.R` builds the named Pacific polygons; `sentinel2.R` searches, reads and composites Sentinel-2 scenes; `atoll_fade.R` builds the imagery transparency masks.
 - `scripts/`: numbered scripts, run in order from the project root.
-- `reference/`: small hand-checked reference data that is committed (`tarawa_landmarks.csv`: four landmark points (three from OpenStreetMap, frozen at the retrieval date so the figure does not change if OSM is edited; ways are positioned at the Overpass `out center` point; Betio Hospital was supplied by the author because OSM still shows the old site).
+- `reference/`: small hand-checked reference data that is committed (`tarawa_s2_scenes.csv`: the Sentinel-2 scenes used, frozen so the composite does not change as new scenes are acquired; `tarawa_landmarks.csv`: four landmark points (three from OpenStreetMap, frozen at the retrieval date so the figure does not change if OSM is edited; ways are positioned at the Overpass `out center` point; Betio Hospital was supplied by the author because OSM still shows the old site).
 - `data-raw/`, `data-processed/`, `outputs/`: never committed (git-ignored). Inputs are fetched or supplied as described below.
 
 ## Data manifest
@@ -17,7 +17,7 @@ The code is MIT-licensed (`LICENSE`). The data are not covered by that licence; 
 
 | Dataset | Used for | Source | Terms | In this repo? |
 |---|---|---|---|---|
-| Sentinel-2 Level-2A imagery | Panel A base image | Copernicus Sentinel-2, via the Element 84 Earth Search catalogue (Sentinel-2 Cloud-Optimized GeoTIFFs, AWS Open Data) | Free, full and open. Attribute: "Contains modified Copernicus Sentinel data [years]" | No (fetched by script, cached) |
+| Sentinel-2 Level-2A imagery | Panel A base image | Copernicus Sentinel-2, via the Element 84 Earth Search catalogue (Sentinel-2 Cloud-Optimized GeoTIFFs, AWS Open Data) | Free, full and open. Attribute: "Contains modified Copernicus Sentinel data 2024-2025" | Scene list only (`reference/tarawa_s2_scenes.csv`); imagery is fetched by script and cached |
 | 2020 census enumeration areas | Betio, rest of South Tarawa, North Tarawa units | Kiribati National Statistics Office | Supplied with permission. **Do not redistribute** | Never |
 | Kiribati contiguous zone (24 nautical miles) | Island-group symbols | Flanders Marine Institute (2023). Maritime Boundaries Geodatabase: Contiguous Zones (24NM), version 4. https://www.marineregions.org/ https://doi.org/10.14284/630 (features with `iso_ter1 == "KIR"`) | CC BY 4.0. Attribute: cite as given | No |
 | Natural Earth I with Shaded Relief and Water, 1:50m (raster) | Panel B globe base | https://www.naturalearthdata.com | Public domain | No (167 MB) |
@@ -39,6 +39,8 @@ From the project root, in order:
 
 ```
 Rscript scripts/01_pacific_groupings.R
+Rscript scripts/02_sentinel2_composite.R
 ```
 
 - `01`: downloads the Natural Earth layers (first run only) and writes `data-processed/pacific_groupings_polygons.gpkg`: 22 named polygons in EPSG:3832. Faces are named from Natural Earth map units. Easter Island, which has no map unit, is named from a reference coordinate, and the Tuvalu polygon also holds Wallis and Futuna.
+- `02`: on the first run, searches the Earth Search catalogue and writes the scene list (the 8 lowest-cloud scenes per tile, July 2024 to October 2025; tiles covering under half of the map frame are dropped, which leaves tile 59NQB only). Each scene is read over HTTP, cut to a 20 m UTM 59N grid, cloud-masked with the scene classification layer, and cached in `data-processed/s2_scenes/`. Writes the per-pixel median composite and a two-layer fade mask (`tight` follows the coast, `smooth` follows the convex hull, each fading over 5 km). First run needs internet and takes about 2.5 minutes; later runs reuse the scene list and the cache.
