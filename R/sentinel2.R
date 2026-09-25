@@ -70,7 +70,8 @@ s2_read_scene <- function(scene, template, bad_scl = c(0, 1, 3, 8, 9, 10, 11)) {
 
 # s2_composite()
 # Per-pixel median of the scenes, by band (red, green, blue), on the template grid
-# Pixels with no usable scene are NA
+# Pixels masked in every scene (about 0.04% of the Tarawa frame, e.g. bright sand read as cloud) are filled with the median of their neighbours
+# Small holes use a 9 x 9 window (180 m), then a 27 x 27 window (540 m) for patches a few hundred metres across; anything larger stays NA
 #   scenes: scene list (id, visual, scl)
 #   template: from s2_template()
 
@@ -78,6 +79,9 @@ s2_composite <- function(scenes, template) {
   layers <- scenes %>% split(seq_len(nrow(scenes))) %>% map(s2_read_scene, template)
   bands <- map(1:3, function(band) median(rast(map(layers, function(layer) layer[[band]])), na.rm = TRUE))
   composite <- rast(bands)
+  for (window in c(9, 27)) {
+    composite <- focal(composite, w = window, fun = "median", na.policy = "only", na.rm = TRUE)
+  }
   names(composite) <- c("red", "green", "blue")
   composite
 }
