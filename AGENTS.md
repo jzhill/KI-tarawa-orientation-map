@@ -10,7 +10,8 @@ Run from the project root (renv activates via `.Rprofile`), in order:
 Rscript scripts/01_pacific_groupings.R
 Rscript scripts/02_sentinel2_composite.R
 Rscript scripts/03_globe.R
-Rscript scripts/04_orientation_map.R
+Rscript scripts/04_tarawa_land_zones.R
+Rscript scripts/05_orientation_map.R
 ```
 
 - Packages: `renv::restore()`; after adding one, `renv::snapshot()`; verify with `renv::status()` (must be consistent).
@@ -27,13 +28,13 @@ Rscript scripts/04_orientation_map.R
 - tidyverse with the `%>%` pipe (never `|>`); `here()` for paths; explicit code over clever code; minimal defensive code.
 - Function comments: `# name()`, then a one-line description with no leading article, one line per further point, parameters last and indented two spaces, blank line before the definition.
 - Match existing style. No numbered subheadings in code. Change only what the task needs; no unrequested functions, refactors or options.
-- Figure design (positions, colours, sizes) lives at the top of `scripts/04_orientation_map.R`, not in the functions.
+- Figure design (positions, colours, sizes) lives at the top of `scripts/05_orientation_map.R`, not in the functions.
 - Map layers are in UTM 59N (EPSG:32659). Globe layers are in screen coordinates (globe radius 1) until `place_globe()` moves them into map coordinates.
 
 ## Data and licences
 
-- The 2020 census enumeration areas belong to the Kiribati National Statistics Office and were supplied with permission: never commit or redistribute them.
-- The README data manifest lists source, terms and attribution for every dataset. Update it when a source changes. Sources with terms that clash with an open-access article were dropped (a CC BY-NC-SA contiguous-zone copy, GADM).
+- The 2020 census enumeration areas belong to the Kiribati National Statistics Office and were supplied with permission: never commit or redistribute them. They are used only in `scripts/04_tarawa_land_zones.R`, to give land polygons their zone.
+- The README data manifest lists source, terms and attribution for every dataset. Update it when a source changes. Sources with terms that clash with an open-access article were dropped (a CC BY-NC-SA contiguous-zone copy, the CC BY-NC-SA SPREP land layer, GADM).
 - The Kiribati extent polygon and island-group symbols are schematic: never describe them as legal boundaries.
 - After regenerating a figure, check its file modification time. If an output will not overwrite, ask the user to close it in their viewer.
 - Do not push without asking.

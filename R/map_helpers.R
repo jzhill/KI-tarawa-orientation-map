@@ -10,26 +10,6 @@ utm_xy <- function(lon, lat) {
     select(x = X, y = Y)
 }
 
-# census_areas()
-# Tarawa census enumeration areas dissolved into Betio, rest of South Tarawa and North Tarawa, in UTM 59N
-# Betio is the Betio_East village (all Betio enumeration areas); the area factor levels set the drawing and legend order
-#   file: 2020 census enumeration area boundaries (geojson)
-
-census_areas <- function(file) {
-  st_read(file, quiet = TRUE) %>%
-    filter(iid_name %in% c("North Tarawa", "South Tarawa")) %>%
-    mutate(area = case_when(
-      vid_name == "Betio_East" ~ "Betio",
-      iid_name == "South Tarawa" ~ "Rest of South Tarawa",
-      TRUE ~ "North Tarawa"
-    )) %>%
-    group_by(area) %>%
-    summarise(geometry = st_union(geometry), .groups = "drop") %>%
-    st_make_valid() %>%
-    st_transform(32659) %>%
-    mutate(area = factor(area, levels = c("Betio", "Rest of South Tarawa", "North Tarawa")))
-}
-
 # imagery_matrix()
 # Sentinel-2 composite as an RGBA colour matrix, with its extent, for annotation_raster
 # Colours are stretched (gamma 0.5), partly desaturated, lightened towards white, and shifted towards pale water where the coast-following fade is below 1, so the fade reads as a light halo

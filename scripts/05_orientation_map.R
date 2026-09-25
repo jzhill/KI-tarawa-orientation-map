@@ -1,5 +1,5 @@
 # Orientation map (Figure 1): Tarawa atoll (A) with the Kiribati globe (B)
-# Needs data-raw/KIR_EA_Census2020FINAL.geojson (Kiribati National Statistics Office; not redistributable), the outputs of scripts 02 and 03, and reference/tarawa_landmarks.csv
+# Needs the outputs of scripts 02, 03 and 04, and reference/tarawa_landmarks.csv
 # Outputs: outputs/orientation_map.pdf, outputs/orientation_map.png (300 dpi, white), outputs/orientation_map_transparent.png (300 dpi)
 # Everything in this script is figure design: positions are longitude/latitude or UTM 59N metres, tuned by eye
 
@@ -27,7 +27,7 @@ globe_centre <- utm_xy(173.12, 1.645)
 globe_radius <- utm_xy(173.12 + 0.10, 1.645)$x - globe_centre$x
 
 imagery <- imagery_matrix(rast(here("data-processed", "tarawa_s2_median_20m.tif")), rast(here("data-processed", "tarawa_s2_fade_20m.tif")))
-areas <- census_areas(here("data-raw", "KIR_EA_Census2020FINAL.geojson"))
+areas <- st_read(here("data-processed", "tarawa_land_zones.gpkg"), quiet = TRUE) %>% mutate(area = factor(area, levels = names(style$area_fill)))
 globe <- readRDS(here("data-processed", "globe.rds")) %>% place_globe(c(globe_centre$x, globe_centre$y), globe_radius)
 globe_halo <- tibble(t = seq(0, 2 * pi, length.out = 400)) %>%
   mutate(x = globe_centre$x + 1.03 * globe_radius * cos(t), y = globe_centre$y + 1.03 * globe_radius * sin(t))
