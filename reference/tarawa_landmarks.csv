@@ -1,0 +1,5 @@
+label,osm_name,lon,lat,osm_type,osm_id,retrieved,note
+Betio Hospital,Betio Hospital,172.9267,1.3580,way,1065417644,2026-09-25,amenity=hospital; centre of the way
+Betio Port,New Port,172.9346,1.3637,node,8273571229,2026-09-25,single node beside the Kiribati Ports Authority site (way 227094888); other candidates: Betio Jetty piers (ways 227094887 and 227094889)
+Tungaru Central Hospital,Tungaru Central Hospital (Hospital; Dentist; Ministry of Health),173.1394,1.3623,way,223383917,2026-09-25,amenity=hospital; centre of the way
+Bonriki Airport,,173.1456,1.3803,way,90442745,2026-09-25,aeroway=terminal (unnamed); centre of the terminal building; the aerodrome way 186501693 is named Bonriki International Airport

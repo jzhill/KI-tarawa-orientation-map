@@ -8,6 +8,7 @@ Status: in development. Code is being added in stages; see the commit history.
 
 - `R/`: functions (sourced, not run directly). `natural_earth.R` fetches Natural Earth layers; `pacific_groupings.R` builds the named Pacific polygons.
 - `scripts/`: numbered scripts, run in order from the project root.
+- `reference/`: small hand-checked reference data that is committed (`tarawa_landmarks.csv`: four OpenStreetMap points, frozen at the retrieval date so the figure does not change if OSM is edited; ways are positioned at the Overpass `out center` point).
 - `data-raw/`, `data-processed/`, `outputs/`: never committed (git-ignored). Inputs are fetched or supplied as described below.
 
 ## Data manifest
@@ -22,7 +23,7 @@ The code is MIT-licensed (`LICENSE`). The data are not covered by that licence; 
 | Natural Earth I with Shaded Relief and Water, 1:50m (raster) | Panel B globe base | https://www.naturalearthdata.com | Public domain | No (167 MB) |
 | Natural Earth "Pacific groupings" lines, 1:10m, v5.0.0 | Schematic Kiribati extent polygon | https://www.naturalearthdata.com (downloaded by `scripts/01_pacific_groupings.R`) | Public domain | No |
 | Natural Earth admin-0 map units, 1:10m, v5.1.1 | Naming the Pacific groupings polygons | https://www.naturalearthdata.com (downloaded by `scripts/01_pacific_groupings.R`) | Public domain | No |
-| OpenStreetMap landmarks (Betio Hospital, Betio Port, Tungaru Central Hospital, Bonriki Airport) | Panel A callouts | OpenStreetMap via the Overpass API (25 September 2026) | ODbL. Attribute: "© OpenStreetMap contributors" | OSM IDs only |
+| OpenStreetMap landmarks (Betio Hospital, Betio Port, Tungaru Central Hospital, Bonriki Airport) | Panel A callouts | OpenStreetMap via the Overpass API, retrieved 25 September 2026 | ODbL. Attribute: "© OpenStreetMap contributors" | Yes: 4 points with OSM IDs in `reference/tarawa_landmarks.csv` |
 
 The contiguous-zone polygons are Marine Regions' 12-24 NM band. A copy on the Pacific Data Hub has the same outer extent but is licensed CC BY-NC-SA 4.0, so it is not used.
 
