@@ -47,3 +47,8 @@ po/*~
 
 # RStudio Connect folder
 rsconnect/
+
+# Data and outputs are never committed (see the data manifest in README.md)
+data-raw/
+data-processed/
+outputs/
